@@ -18,6 +18,8 @@ export const updateContactSchema = Joi.object({
     "object.min": "Body must have at least one field",
   });
 
+
 export const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
+
