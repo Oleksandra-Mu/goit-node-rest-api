@@ -1,7 +1,7 @@
 import {
   updateContactById,
   getContacts,
-  getContactById,
+  getContact,
   removeContact,
   addContact,
   updateStatusContact,
@@ -10,7 +10,8 @@ import HttpError from "../helpers/HttpError.js";
 
 export const getAllContacts = async (req, res, next) => {
   try {
-    const contacts = await getContacts();
+    const { id: owner } = req.user;
+    const contacts = await getContacts({ owner });
     res.json(contacts);
   } catch (error) {
     next(error);
@@ -19,7 +20,9 @@ export const getAllContacts = async (req, res, next) => {
 
 export const getOneContact = async (req, res, next) => {
   try {
-    const contact = await getContactById(req.params.id);
+    const { id } = req.params;
+    const { id: owner } = req.user;
+    const contact = await getContact({ id, owner });
     if (!contact) {
       throw HttpError(404);
     }
@@ -32,7 +35,8 @@ export const getOneContact = async (req, res, next) => {
 export const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const contact = await removeContact(id);
+    const { id: owner } = req.user;
+    const contact = await removeContact({ id, owner });
     if (!contact) {
       throw HttpError(404);
     }
@@ -44,7 +48,8 @@ export const deleteContact = async (req, res, next) => {
 
 export const createContact = async (req, res, next) => {
   try {
-    const contact = await addContact(req.body);
+    const { id: owner } = req.user;
+    const contact = await addContact({ ...req.body, owner });
     res.status(201).json(contact);
   } catch (error) {
     next(error);
@@ -54,7 +59,8 @@ export const createContact = async (req, res, next) => {
 export const updateContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const contact = await updateContactById(id, req.body);
+    const { id: owner } = req.user;
+    const contact = await updateContactById({ id, owner }, req.body);
     if (!contact) {
       throw HttpError(404);
     }
@@ -68,8 +74,12 @@ export const updateContact = async (req, res, next) => {
 export const updateStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { id: owner } = req.user;
     const { favorite } = req.body;
-    const contact = await updateStatusContact(id, favorite);
+    const contact = await updateStatusContact(
+      { id: Number(id), owner },
+      favorite
+    );
     if (!contact) {
       throw HttpError(404);
     }
