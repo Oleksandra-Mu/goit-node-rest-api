@@ -4,6 +4,7 @@ import validateBody from "../helpers/validateBody.js";
 import { registerSchema, loginSchema } from "../schemas/authSchemas.js";
 import authControllers from "../controllers/authControllers.js";
 import authenticate from "../middleware/authenticate.js";
+import upload from "../middleware/upload.js";
 
 const authRouter = express.Router();
 authRouter.post(
@@ -21,4 +22,11 @@ authRouter.post(
 authRouter.get("/current", authenticate, authControllers.currentController);
 
 authRouter.post("/logout", authenticate, authControllers.logoutController);
+
+authRouter.patch(
+  "/avatars",
+  upload.single("avatarURL"),
+  authenticate,
+  authControllers.updateAvatarController
+);
 export default authRouter;

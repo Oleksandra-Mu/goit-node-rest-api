@@ -6,11 +6,14 @@ const registerController = async (req, res, next) => {
     if (await authServices.getUser({ email: req.body.email })) {
       return res.status(409).json({ message: "Email in use" });
     }
-    const { email, subscription } = await authServices.registerUser(req.body);
+    const { email, subscription, avatarURL } = await authServices.registerUser(
+      req.body
+    );
 
-    res
-      .status(201)
-      .json({ user: { email, subscription }, message: "User created" });
+    res.status(201).json({
+      user: { email, subscription, avatarURL },
+      message: "User created",
+    });
   } catch (error) {
     next(error);
   }
@@ -36,11 +39,21 @@ const currentController = async (req, res) => {
 
 const logoutController = async (req, res) => {
   await authServices.logoutUser(req.user);
-  res.status(204);
+  res.status(204).end();
+};
+
+const updateAvatarController = async (req, res, next) => {
+  try {
+    const { avatarURL } = await authServices.updateAvatar(req.user, req.file);
+    res.json({ avatarURL });
+  } catch (error) {
+    next(error);
+  }
 };
 export default {
   registerController,
   loginController,
   currentController,
   logoutController,
+  updateAvatarController,
 };
