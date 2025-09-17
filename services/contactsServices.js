@@ -1,12 +1,12 @@
 import e from "express";
 import Contact from "../db/Contact.js";
 
-export const getContacts = () => Contact.findAll();
+export const getContacts = (query) => Contact.findAll({ where: query });
 
-export const getContactById = (id) => Contact.findByPk(id);
+export const getContact = (query) => Contact.findOne({ where: query });
 
-export const removeContact = async (id) => {
-  const contact = await getContactById(id);
+export const removeContact = async (query) => {
+  const contact = await getContact(query);
   if (!contact) {
     return null;
   }
@@ -17,8 +17,8 @@ export const removeContact = async (id) => {
 
 export const addContact = (payload) => Contact.create(payload);
 
-export const updateContactById = async (id, payload) => {
-  const contact = await getContactById(id);
+export const updateContactById = async (query, payload) => {
+  const contact = await getContact(query);
   if (!contact) {
     return null;
   }
@@ -26,8 +26,8 @@ export const updateContactById = async (id, payload) => {
   return contact;
 };
 
-export const updateStatusContact = async (id, favorite) => {
-  const contact = await getContactById(id);
+export const updateStatusContact = async (query, favorite) => {
+  const contact = await getContact(query);
   if (!contact) {
     return null;
   }
