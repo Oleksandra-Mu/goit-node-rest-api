@@ -33,8 +33,8 @@ const loginController = async (req, res, next) => {
 };
 
 const currentController = async (req, res) => {
-  const { email, subscription } = req.user;
-  res.json({ email, subscription });
+  const { email, subscription, avatarURL } = req.user;
+  res.json({ email, subscription, avatarURL });
 };
 
 const logoutController = async (req, res) => {
