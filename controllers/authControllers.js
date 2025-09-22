@@ -19,6 +19,26 @@ const registerController = async (req, res, next) => {
   }
 };
 
+const verifyEmailController = async (req, res, next) => {
+  try {
+    const { verificationToken } = req.params;
+    await authServices.verifyUser(verificationToken);
+    res.json({ message: "Verification successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resendVerifyEmailController = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    await authServices.resendVerifyEmail(email);
+    res.json({ message: "Verification email sent" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const loginController = async (req, res, next) => {
   try {
     const { token, user } = await authServices.loginUser(req.body);
@@ -56,4 +76,6 @@ export default {
   currentController,
   logoutController,
   updateAvatarController,
+  verifyEmailController,
+  resendVerifyEmailController,
 };
